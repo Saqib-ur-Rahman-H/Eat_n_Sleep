@@ -14,18 +14,10 @@ import com.ty.eat.n.sleep.repository.BranchRepository;
 public class BranchDao {
 	@Autowired
 	private BranchRepository branchRepository;
-	@Autowired
-	private RoomDao roomDao;
 
-	public Branch saveBranch(int availableRoomId, Branch branch) {
-		Room room = roomDao.getRoomById(availableRoomId);
-		List<Room> rooms = branch.getAvailableRooms();
-		if (room != null) {
-			branch.setAvailableRooms(rooms);
+	public Branch saveBranch(Branch branch) {
 			branchRepository.save(branch);
 			return branch;
-		}
-		return null;
 	}
 
 	public Branch getBranchById(int id) {

@@ -6,16 +6,22 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ty.eat.n.sleep.dto.Branch;
 import com.ty.eat.n.sleep.dto.Guest;
+import com.ty.eat.n.sleep.dto.Room;
 import com.ty.eat.n.sleep.repository.GuestRepository;
 
 @Repository
 public class GuestDao {
 	@Autowired
 	private GuestRepository guestRepository;
+	@Autowired
+	private RoomDao roomDao;
 
-	public Guest saveGuest(Guest guest) {
-		return guestRepository.save(guest);
+	public Guest saveGuest(int roomid,Guest guest) {
+		Room room=roomDao.getRoomById(roomid);
+			roomDao.updateRoom(roomid, room);
+			return guestRepository.save(guest);
 	}
 
 	public Guest getGuest(int id) {
@@ -35,7 +41,6 @@ public class GuestDao {
 		if (guest != null) {
 			guestRepository.deleteById(id);
 			return true;
-
 		}
 		return false;
 	}

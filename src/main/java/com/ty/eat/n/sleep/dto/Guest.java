@@ -21,11 +21,12 @@ public class Guest {
 	private int id;
 	private String name;
 	private String email;
-	private String pwd;
+	private String pwd; 
 	private long phoneNo;
 	private LocalDate joiningDate;
 	private LocalDate checkoutDate;
 	private double totalAmount;
+	private double paidAmount;
 	private double pendingAmount;
 	private String paymentStatus;
 	private String govtID;

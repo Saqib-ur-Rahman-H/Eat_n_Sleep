@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.ty.eat.n.sleep.dto.Guest;
+import com.ty.eat.n.sleep.dto.Branch;
 import com.ty.eat.n.sleep.dto.Room;
 import com.ty.eat.n.sleep.repository.RoomRepository;
 
@@ -15,17 +15,13 @@ public class RoomDao {
 	@Autowired
 	private RoomRepository roomRepository;
 	@Autowired
-	private GuestDao guestDao;
-
-	public Room saveRoom(int guestid, Room room) {
-		Guest guest = guestDao.getGuest(guestid);
-		List<Guest> guests = room.getGuests();
-		if (guest != null) {
-			room.setGuests(guests);
+	private BranchDao branchDao;
+	public Room saveRoom(int branchId, Room room) {
+		
+			Branch branch = branchDao.getBranchById(branchId);
+			branchDao.saveBranch(branch);
 			roomRepository.save(room);
 			return room;
-		}
-		return null;
 	}
 
 	public Room getRoomById(int id) {
