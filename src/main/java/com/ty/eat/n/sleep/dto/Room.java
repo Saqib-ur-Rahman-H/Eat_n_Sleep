@@ -18,8 +18,10 @@ public class Room {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private int size;
+	private double cost;
 	private String roomType;
 	private String image;
+	private String discription;
 	@OneToMany(mappedBy = "room")
 	private List<Guest> guests;
 

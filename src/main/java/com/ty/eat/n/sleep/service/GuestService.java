@@ -7,12 +7,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.ty.eat.n.sleep.dao.GuestDao;
 import com.ty.eat.n.sleep.dao.RoomDao;
 import com.ty.eat.n.sleep.dto.Branch;
 import com.ty.eat.n.sleep.dto.Guest;
+import com.ty.eat.n.sleep.dto.ResponseStructure;
 import com.ty.eat.n.sleep.dto.Room;
 
 @Service
@@ -24,35 +27,60 @@ public class GuestService {
 	@Autowired
 	private Guest guest;
 
-	public Guest saveGuest(int roomid, Guest guest) {
+	public ResponseStructure<Guest> saveGuest(int roomid, Guest guest) {
 		Room room = roomDao.getRoomById(roomid);
-		List<Guest> guests = room.getGuests();
-		if (guests.size() >= room.getSize()) {
-			guests.add(guest);
-			room.setGuests(guests);
-			return guestDao.saveGuest(roomid, guest);
-		}
-
-		else {
-			Branch brabch = room.getBranch();
-			List<Room> avlRooms = brabch.getAvailableRooms();
-			avlRooms.remove(room);
-			List<Room> takenRooms = brabch.getBookedRooms();
-			takenRooms.add(room);
-			return null;
-		}
-
-	}
-
-	public Guest getGuest(int id) {
-		if (guestDao.getGuest(id) != null) {
-			return guestDao.getGuest(id);
+		if (guestDao.getGuest(guest.getId()) == null) {
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Not Found");
+			responseStructure.setData(null);
+			return responseStructure;
 		} else {
-			return null;
+			List<Guest> guests = room.getGuests();
+			if (guests.size() >= room.getSize()) {
+				guest.setTotalAmount(room.getCost() / room.getSize());
+				guests.add(guest);
+				room.setGuests(guests);
+				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+				responseStructure.setStatus(HttpStatus.OK.value());
+				responseStructure.setMessage("Saved Sucessfuly");
+				responseStructure.setData(guestDao.saveGuest(roomid, guest));
+				return responseStructure;
+			}
+
+			else {
+				Branch brabch = room.getBranch();
+				List<Room> avlRooms = brabch.getAvailableRooms();
+				avlRooms.remove(room);
+				List<Room> takenRooms = brabch.getBookedRooms();
+				takenRooms.add(room);
+				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+				responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+				responseStructure.setMessage("Not Found");
+				responseStructure.setData(null);
+				return responseStructure;
+			}
+		}
+
+	}
+
+	public ResponseStructure<Guest> getGuest(int id) {
+		if (guestDao.getGuest(id) != null) {
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage(" Sucessfuly");
+			responseStructure.setData(guestDao.getGuest(id));
+			return responseStructure;
+		} else {
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Not Found");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public boolean deleteGuest(int id) {
+	public ResponseStructure<Boolean> deleteGuest(int id) {
 
 		if (guestDao.deleteGuest(id)) {
 			Room room = guest.getRoom();
@@ -64,48 +92,91 @@ public class GuestService {
 				List<Room> avlRooms = branch.getAvailableRooms();
 				avlRooms.add(room);
 			}
-			return true;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage(" Sucessfuly Deleted");
+			responseStructure.setData(guestDao.deleteGuest(id));
+			return responseStructure;
 		} else {
-			return false;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Not Deleted");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public List<Guest> getAllGuests() {
+	public ResponseStructure<List<Guest>> getAllGuests() {
 		if (guestDao.getAllGuests().size() > 0) {
-			return guestDao.getAllGuests();
+			ResponseStructure<List<Guest>> responseStructure = new ResponseStructure<List<Guest>>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage(" Sucessfuly");
+			responseStructure.setData(guestDao.getAllGuests());
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<List<Guest>> responseStructure = new ResponseStructure<List<Guest>>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage(" Failed");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public Guest updateguest(int id, Guest guest) {
+	public ResponseStructure<Guest> updateguest(int id, Guest guest) {
 		if (guestDao.updateGuest(id, guest) != null) {
-			return guestDao.updateGuest(id, guest);
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage(" Sucessfuly Updated ");
+			responseStructure.setData(guestDao.updateGuest(id, guest));
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
+			responseStructure.setMessage("Upated Falied ");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
-	
-	public List<Guest> getCheckOutGuests(){
+
+	public ResponseStructure<List<Guest>>  getCheckOutGuests() {
 		List<Guest> guests = guestDao.getAllGuests();
-		List<Guest> outGuest=new ArrayList<Guest>();
-		for(Guest guest:guests) {
-			if (guest.getCheckoutDate()==LocalDate.now()) {
-				 outGuest.add(guest);
+		List<Guest> outGuest = new ArrayList<Guest>();
+		for (Guest guest : guests) {
+			if (guest.getCheckoutDate() == LocalDate.now()) {
+				outGuest.add(guest);
 			}
 		}
-		return outGuest;
+		ResponseStructure<List<Guest>> responseStructure = new ResponseStructure<List<Guest>>();
+		responseStructure.setStatus(HttpStatus.OK.value());
+		responseStructure.setMessage(" Sucessfuly ");
+		responseStructure.setData(outGuest);
+		return responseStructure;
 	}
-	
-	public Guest makePayment(int guestid,double amt) {
+
+	public Guest makePayment(int guestid, double amt) {
 		Guest guest = guestDao.getGuest(guestid);
-		guest.setPaidAmount(guest.getPaidAmount()+amt);
-		guest.setPendingAmount(guest.getTotalAmount()-guest.getPaidAmount());
-		if (guest.getTotalAmount()==guest.getPaidAmount()) {
+		guest.setPaidAmount(guest.getPaidAmount() + amt);
+		guest.setPendingAmount(guest.getTotalAmount() - guest.getPaidAmount());
+		if (guest.getTotalAmount() == guest.getPaidAmount()) {
 			guest.setPaymentStatus("Fully payed");
-		}
-		else
+		} else
 			guest.setPaymentStatus("Pendibg");
 		return guestDao.updateGuest(guest.getId(), guest);
+	}
+
+	public ResponseStructure<Guest> getGuestsbyGovtId(int govtid) {
+		if (guestDao.getAllGuests().size() > 0) {
+			ResponseStructure<Guest>responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Sucessfuly Get By Gov Id ");
+			responseStructure.setData(guestDao.findGuestBygovtId(govtid));
+			return responseStructure;
+		} else {
+			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
+			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
+			responseStructure.setMessage(" Falied ");
+			responseStructure.setData(null);
+			return responseStructure;
+		}
 	}
 }

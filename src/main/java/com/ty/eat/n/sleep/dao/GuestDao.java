@@ -55,8 +55,11 @@ public class GuestDao {
 		return null;
 	}
 
-	public Guest findRoomByGuestId(int guestId) {
+	public Guest findRoomByguestId(int guestId) {
 		return guestRepository.findRoomByGuestId(guestId);
+	}
+	public Guest findGuestBygovtId(int govtId) {
+		return guestRepository.findRoomByGovtId(govtId);
 	}
 
 }

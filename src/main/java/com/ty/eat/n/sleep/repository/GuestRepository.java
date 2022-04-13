@@ -6,5 +6,5 @@ import com.ty.eat.n.sleep.dto.Guest;
 
 public interface GuestRepository extends JpaRepository<Guest, Integer> {
 	public Guest findRoomByGuestId(int guestId);
-
+	public Guest findRoomByGovtId(int govtId);
 }

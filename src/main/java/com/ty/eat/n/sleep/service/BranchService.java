@@ -3,49 +3,96 @@ package com.ty.eat.n.sleep.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ty.eat.n.sleep.dao.BranchDao;
 import com.ty.eat.n.sleep.dto.Branch;
+import com.ty.eat.n.sleep.dto.ResponseStructure;
+import com.ty.eat.n.sleep.dto.Room;
+import com.ty.eat.n.sleep.dto.User;
 
 @Service
 public class BranchService {
 	@Autowired
 	private BranchDao branchDao;
 
-	public Branch saveBranch(Branch branch) {
-		return branchDao.saveBranch(branch);
+	public ResponseStructure<Branch> saveBranch(Branch branch) {
+		if (branch != null) {
+			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Sucessfuly Saved");
+			responseStructure.setData(branchDao.saveBranch(branch));
+			return responseStructure;
+		}
+		ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+		responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+		responseStructure.setMessage("Not Saved");
+		responseStructure.setData(null);
+		return responseStructure;
 	}
 
-	public Branch getBranch(int id) {
+	public ResponseStructure<Branch> getBranch(int id) {
 		if (branchDao.getBranchById(id) != null) {
-			return branchDao.getBranchById(id);
+			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Sucessful");
+			responseStructure.setData(branchDao.getBranchById(id));
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Not Saved");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public boolean deleteBranch(int id) {
+	public ResponseStructure<Boolean> deleteBranch(int id) {
 		if (branchDao.deleteBranchById(id)) {
-			return true;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Sucessful");
+			responseStructure.setData(branchDao.deleteBranchById(id));
+			return responseStructure;
 		} else {
-			return false;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Not Deleted");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public List<Branch> getAllBranchs() {
+	public ResponseStructure<List<Branch>> getAllBranchs() {
 		if (branchDao.getAllBranchs().size() > 0) {
-			return branchDao.getAllBranchs();
+			ResponseStructure<List<Branch>> responseStructure = new ResponseStructure<List<Branch>>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Sucessful");
+			responseStructure.setData(branchDao.getAllBranchs());
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<List<Branch>> responseStructure = new ResponseStructure<List<Branch>>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Server Error");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public Branch updatebranch(int id, Branch branch) {
+	public ResponseStructure<Branch> updatebranch(int id, Branch branch) {
 		if (branchDao.updateBranch(id, branch) != null) {
-			return branchDao.updateBranch(id, branch);
+			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Updated Sucessfully");
+			responseStructure.setData(branchDao.updateBranch(id, branch));
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
+			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
+			responseStructure.setMessage("Not Updated");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 }

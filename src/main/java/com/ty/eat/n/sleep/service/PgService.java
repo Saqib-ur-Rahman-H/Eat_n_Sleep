@@ -3,49 +3,98 @@ package com.ty.eat.n.sleep.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ty.eat.n.sleep.dao.PgDao;
 import com.ty.eat.n.sleep.dto.Pg;
+import com.ty.eat.n.sleep.dto.ResponseStructure;
+
 
 @Service
 public class PgService {
 	@Autowired
 	private PgDao pgDao;
 
-	public Pg savePg(Pg pg) {
-		return pgDao.savePg(pg);
+	public ResponseStructure<Pg> savePg(Pg pg) {
+		if (pg != null) {
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Saved Sucessfully");
+			responseStructure.setData(pg);
+			return responseStructure;
+		} else {
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			responseStructure.setMessage("Saved Sucessfully");
+			responseStructure.setData(pg);
+			return responseStructure;
+		}
+
 	}
 
-	public Pg getPg(int id) {
+	public ResponseStructure getPg(int id) {
 		if (pgDao.getPg(id) != null) {
-			return pgDao.getPg(id);
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage(" Sucessfully");
+			responseStructure.setData(pgDao.getPg(id));
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Id Not Found");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public boolean deletePg(int id) {
+	public ResponseStructure deletePg(int id) {
 		if (pgDao.deletePg(id)) {
-			return true;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Deleted Sucessfully");
+			responseStructure.setData(true);
+			return responseStructure;
 		} else {
-			return false;
+			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Deleted Sucessfully");
+			responseStructure.setData(false);
+			return responseStructure;
 		}
 	}
 
-	public List<Pg> getAllPgs() {
+	public ResponseStructure<List<Pg>> getAllPgs() {
 		if (pgDao.getAllPgs().size() > 0) {
-			return pgDao.getAllPgs();
+			ResponseStructure<List<Pg>> responseStructure = new ResponseStructure<List<Pg>>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Deleted Sucessfully");
+			responseStructure.setData(pgDao.getAllPgs());
+			return responseStructure;
 		} else {
-			return null;
+			ResponseStructure<List<Pg>> responseStructure = new ResponseStructure<List<Pg>>();
+			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+			responseStructure.setMessage("Deleted Sucessfully");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 
-	public Pg updatePg(int id, Pg pg) {
+	public ResponseStructure<Pg> updatePg(int id, Pg pg) {
 		if (pgDao.updatePg(id, pg) != null) {
-			return pgDao.updatePg(id, pg);
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.OK.value());
+			responseStructure.setMessage("Updated Sucessfully");
+			responseStructure.setData(pgDao.updatePg(id, pg));
+			return responseStructure;
+
 		} else {
-			return null;
+			ResponseStructure<Pg> responseStructure = new ResponseStructure<Pg>();
+			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
+			responseStructure.setMessage("Not Updated ");
+			responseStructure.setData(null);
+			return responseStructure;
 		}
 	}
 }
