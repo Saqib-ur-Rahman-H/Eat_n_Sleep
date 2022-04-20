@@ -1,11 +1,13 @@
 package com.ty.eat.n.sleep.dao;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ty.eat.n.sleep.ExcelSheetHelper.UserExcelSheetGenerator;
 import com.ty.eat.n.sleep.dto.User;
 import com.ty.eat.n.sleep.repository.UserRepository;
 
@@ -51,4 +53,9 @@ public class UserDao {
 		return null;
 	}
 
+	public ByteArrayInputStream load() {
+		List<User> users = userRepository.findAll();
+		ByteArrayInputStream in = UserExcelSheetGenerator.usersToExcel(users);
+		return in;
+	}
 }

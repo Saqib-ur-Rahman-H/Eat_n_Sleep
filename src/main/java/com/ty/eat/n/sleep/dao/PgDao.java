@@ -1,12 +1,16 @@
 package com.ty.eat.n.sleep.dao;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ty.eat.n.sleep.ExcelSheetHelper.PgExcelSheetGenerator;
+import com.ty.eat.n.sleep.ExcelSheetHelper.UserExcelSheetGenerator;
 import com.ty.eat.n.sleep.dto.Pg;
+import com.ty.eat.n.sleep.dto.User;
 import com.ty.eat.n.sleep.repository.PgRepository;
 
 @Repository
@@ -49,6 +53,12 @@ public class PgDao {
 
 		}
 		return null;
+	}
+	
+	public ByteArrayInputStream load() {
+		List<Pg> pgs = pgRepository.findAll();
+		ByteArrayInputStream in = PgExcelSheetGenerator.pgsToExcel(pgs);
+		return in;
 	}
 
 }

@@ -1,13 +1,18 @@
 package com.ty.eat.n.sleep.dao;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ty.eat.n.sleep.ExcelSheetHelper.BranchExcelSheetGenerator;
+import com.ty.eat.n.sleep.ExcelSheetHelper.GuestExcelSheetGenerator;
+import com.ty.eat.n.sleep.ExcelSheetHelper.UserExcelSheetGenerator;
 import com.ty.eat.n.sleep.dto.Branch;
 import com.ty.eat.n.sleep.dto.Room;
+import com.ty.eat.n.sleep.dto.User;
 import com.ty.eat.n.sleep.repository.BranchRepository;
 
 @Repository
@@ -52,6 +57,12 @@ public class BranchDao {
 
 		}
 		return null;
+	}
+	
+	public ByteArrayInputStream load() {
+		List<Branch> branches = branchRepository.findAll();
+		ByteArrayInputStream in = BranchExcelSheetGenerator.branchesToExcel(branches);
+		return in;
 	}
 
 }

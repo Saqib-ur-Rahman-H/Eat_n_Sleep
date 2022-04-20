@@ -1,5 +1,6 @@
 package com.ty.eat.n.sleep.service;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,5 +108,9 @@ public class RoomService {
 			ResponseEntity<ResponseStructure<Room>> responseEntity=new ResponseEntity<ResponseStructure<Room>>(responseStructure,HttpStatus.NOT_FOUND); 
 			return responseEntity;
 		}
+	}
+	public ByteArrayInputStream load() {
+		ByteArrayInputStream in = roomDao.load();
+		return in;
 	}
 }

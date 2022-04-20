@@ -1,5 +1,6 @@
 package com.ty.eat.n.sleep.service;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +120,9 @@ public class PgService {
 			ResponseEntity<ResponseStructure<Pg>> responseEntity=new ResponseEntity<ResponseStructure<Pg>>(responseStructure,HttpStatus.NOT_FOUND); 
 			return responseEntity;
 		}
+	}
+	public ByteArrayInputStream load() {
+		ByteArrayInputStream in = pgDao.load();
+		return in;
 	}
 }

@@ -1,5 +1,6 @@
 package com.ty.eat.n.sleep.service;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -190,20 +191,9 @@ public class GuestService {
 		
 	}
 
-//	public ResponseStructure<Guest> getGuestsbyGovtId(int govtid) {
-//		if (guestDao.getAllGuests().size() > 0) {
-//			ResponseStructure<Guest>responseStructure = new ResponseStructure<Guest>();
-//			responseStructure.setStatus(HttpStatus.OK.value());
-//			responseStructure.setMessage("Sucessfuly Get By Gov Id ");
-//			responseStructure.setData(guestDao.findGuestBygovtId(govtid));
-//			return responseStructure;
-//		} else {
-//			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
-//			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
-//			responseStructure.setMessage(" Falied ");
-//			responseStructure.setData(null);
-//			return responseStructure;
-//		}
-//	}
+	public ByteArrayInputStream load() {
+		ByteArrayInputStream in = guestDao.load();
+		return in;
+	}
 	
 }
