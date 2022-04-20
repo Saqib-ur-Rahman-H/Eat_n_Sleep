@@ -43,6 +43,7 @@ public class UserDao {
 	public User updateUser(int id, User user) {
 		User existingUser = getUser(id);
 		if (existingUser != null) {
+			user.setId(id);
 			userRepository.save(user);
 			return user;
 

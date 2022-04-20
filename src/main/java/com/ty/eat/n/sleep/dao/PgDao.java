@@ -43,6 +43,7 @@ public class PgDao {
 	public Pg updatePg(int id, Pg pg) {
 		Pg existingPg = getPg(id);
 		if (existingPg != null) {
+			pg.setId(id);
 			pgRepository.save(pg);
 			return pg;
 

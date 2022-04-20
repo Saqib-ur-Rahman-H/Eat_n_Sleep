@@ -11,6 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Entity
@@ -23,14 +28,24 @@ public class Guest {
 	private String email;
 	private String pwd; 
 	private long phoneNo;
+	@CreationTimestamp
 	private LocalDate joiningDate;
+	@UpdateTimestamp
 	private LocalDate checkoutDate;
 	private double totalAmount;
-	private double paidAmount;
+	private double paidAmount;	
 	private double pendingAmount;
 	private String paymentStatus;
 	private String govtID;
 	@ManyToOne
-	@JoinColumn
+    @JoinColumn
 	private Room room;
+	
+	
+	@JsonIgnore
+	public Room getRoom()
+	{
+		return room;
+		
+	}
 }

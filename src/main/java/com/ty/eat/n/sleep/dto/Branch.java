@@ -24,8 +24,10 @@ public class Branch {
 	private long phoneNo;
 	private String pgName;
 	private String address;
+	
 	@OneToMany(mappedBy = "branch")
 	private List<Room> availableRooms;
+	@OneToMany(mappedBy = "branch")
 	private List<Room> bookedRooms;
 
 	@JsonIgnore

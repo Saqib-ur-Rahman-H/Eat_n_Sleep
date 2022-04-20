@@ -19,9 +19,15 @@ public class RoomDao {
 	public Room saveRoom(int branchId, Room room) {
 		
 			Branch branch = branchDao.getBranchById(branchId);
-			branchDao.saveBranch(branch);
-			roomRepository.save(room);
-			return room;
+			if(branch!=null)
+			{
+				room.setBranch(branch);
+				roomRepository.save(room);
+				return room;
+			}
+			return null;
+			
+			
 	}
 
 	public Room getRoomById(int id) {
@@ -47,9 +53,13 @@ public class RoomDao {
 		return false;
 	}
 
-	public Room updateRoom(int id, Room room) {
+	public Room updateRoom(int id,int bid, Room room) {
+		Branch b1=branchDao.getBranchById(bid);
+		
 		Room existingRoom = getRoomById(id);
-		if (existingRoom != null) {
+		if (existingRoom != null&&b1!=null) {
+			room.setId(id);
+			room.setBranch(b1);
 			roomRepository.save(room);
 			return room;
 

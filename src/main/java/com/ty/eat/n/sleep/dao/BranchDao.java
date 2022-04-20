@@ -46,6 +46,7 @@ public class BranchDao {
 	public Branch updateBranch(int id, Branch branch) {
 		Branch existingBranch = getBranchById(id);
 		if (existingBranch != null) {
+			branch.setId(id);
 			branchRepository.save(branch);
 			return branch;
 

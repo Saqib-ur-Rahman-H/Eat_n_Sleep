@@ -20,7 +20,8 @@ public class GuestDao {
 
 	public Guest saveGuest(int roomid,Guest guest) {
 		Room room=roomDao.getRoomById(roomid);
-			roomDao.updateRoom(roomid, room);
+			//roomDao.updateRoom(roomid,bid, room);
+		      guest.setRoom(room);
 			return guestRepository.save(guest);
 	}
 
@@ -48,6 +49,7 @@ public class GuestDao {
 	public Guest updateGuest(int id, Guest guest) {
 		Guest existingGuest = getGuest(id);
 		if (existingGuest != null) {
+			guest.setId(id);
 			guestRepository.save(guest);
 			return guest;
 
@@ -55,11 +57,11 @@ public class GuestDao {
 		return null;
 	}
 
-	public Guest findRoomByguestId(int guestId) {
-		return guestRepository.findRoomByGuestId(guestId);
-	}
-	public Guest findGuestBygovtId(int govtId) {
-		return guestRepository.findRoomByGovtId(govtId);
-	}
+//	public Guest findRoomByguestId(int guestId) {
+//		return guestRepository.findRoomByGuestId(guestId);
+//	}
+//	public Guest findGuestBygovtId(int govtId) {
+//		return guestRepository.findRoomByGovtId(govtId);
+//	}
 
 }
