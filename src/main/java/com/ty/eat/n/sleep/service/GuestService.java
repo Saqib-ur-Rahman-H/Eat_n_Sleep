@@ -27,8 +27,9 @@ public class GuestService {
 	private GuestDao guestDao;
 	@Autowired
 	private RoomDao roomDao;
-
-
+	@Autowired
+	MailService service;
+	
 	public ResponseEntity<ResponseStructure<Guest>> saveGuest(int roomid, Guest guest) {
 		Room room = roomDao.getRoomById(roomid);
 		ResponseEntity<ResponseStructure<Guest>> responseEntityNo=new ResponseEntity<ResponseStructure<Guest>>(HttpStatus.OK); 
@@ -45,6 +46,8 @@ public class GuestService {
 				guest.setTotalAmount(room.getCost() / room.getSize());
 				guests.add(guest);
 				room.setGuests(guests);
+				roomDao.updateRoom(guest.getRoom().getId(), guest.getRoom().getBranch().getId(), room);
+				service.sendSimpleEmail(guest.getEmail(), "Hiiii "+guest.getName()+" thanks for choosing our pg Eat-N-Sleep hope u will have a good time hear\n Your wifi password is"+guest.getRoom().getBranch().getWifiPassword()+ "/n your Room No is "+guest.getRoom()+" Your CheckIn date: "+ guest.getJoiningDate()+"/n Your CheckIn date: "+guest.getCheckoutDate(), "Welcome To Eat_N_Sleep");
 				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 				responseStructure.setStatus(HttpStatus.OK.value());
 				responseStructure.setMessage("Saved Sucessfuly");

@@ -20,11 +20,5 @@ public class Pg {
 	private String name;
 	@OneToMany
 	private List<Branch> branches;
-	private String ownerName;
-	@JsonIgnore
-	public List<Branch> getBranches() {
-		return branches;
-	}
-	
-	
+	private String ownerName;	
 }

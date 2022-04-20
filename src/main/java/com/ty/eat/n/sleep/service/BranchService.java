@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ty.eat.n.sleep.dao.BranchDao;
+import com.ty.eat.n.sleep.dao.PgDao;
 import com.ty.eat.n.sleep.dto.Branch;
+import com.ty.eat.n.sleep.dto.Pg;
 import com.ty.eat.n.sleep.dto.ResponseStructure;
 import com.ty.eat.n.sleep.dto.Room;
 import com.ty.eat.n.sleep.dto.User;
@@ -17,17 +19,25 @@ import com.ty.eat.n.sleep.dto.User;
 public class BranchService {
 	@Autowired
 	private BranchDao branchDao;
-
-	public ResponseEntity<ResponseStructure<Branch>> saveBranch(Branch branch) {
+	@Autowired
+	private PgDao pgDao;
+	public ResponseEntity<ResponseStructure<Branch>> saveBranch(int pgId,Branch branch) {
 		if (branch != null) {
 			  
 			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
-
+			Pg pg = pgDao.getPg(pgId);
+			List<Branch> pgs = pg.getBranches();
+			if(pgs!=null) {
+			pgs.add(branch);
+			pg.setBranches(pgs);
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage("Sucessfuly Saved");
 			responseStructure.setData(branchDao.saveBranch(branch));
 			ResponseEntity<ResponseStructure<Branch>> responseEntity = new ResponseEntity<ResponseStructure<Branch>>(responseStructure,HttpStatus.OK);
 			return responseEntity;
+			}
+			else
+				return null;
 		}
 		ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
 		ResponseEntity<ResponseStructure<Branch>> entity = new ResponseEntity<ResponseStructure<Branch>>(responseStructure,HttpStatus.NOT_FOUND);
