@@ -23,24 +23,27 @@ import com.ty.eat.n.sleep.dto.User;
 
 @Service
 public class GuestService {
-	
+
 	@Autowired
 	private GuestDao guestDao;
 	@Autowired
 	private RoomDao roomDao;
 	@Autowired
 	MailService service;
-	
+
 	public ResponseEntity<ResponseStructure<Guest>> saveGuest(int roomid, Guest guest) {
 		Room room = roomDao.getRoomById(roomid);
-		ResponseEntity<ResponseStructure<Guest>> responseEntityNo=new ResponseEntity<ResponseStructure<Guest>>(HttpStatus.OK); 
+		guest.setRoom(room);
+		roomDao.updateRoom(roomid, room.getBranch().getId(), room);
+		ResponseEntity<ResponseStructure<Guest>> responseEntityNo = new ResponseEntity<ResponseStructure<Guest>>(
+				HttpStatus.OK);
 		if (guestDao.getGuest(guest.getId()) != null) {
 			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 			responseStructure.setMessage("Not Found");
 			responseStructure.setData(null);
 			return responseEntityNo;
-			
+
 		} else {
 			List<Guest> guests = room.getGuests();
 			if (guests.size() < room.getSize()) {
@@ -48,12 +51,17 @@ public class GuestService {
 				guests.add(guest);
 				room.setGuests(guests);
 				roomDao.updateRoom(guest.getRoom().getId(), guest.getRoom().getBranch().getId(), room);
-				service.sendSimpleEmail(guest.getEmail(), "Hiiii "+guest.getName()+" thanks for choosing our pg Eat-N-Sleep hope u will have a good time hear\n Your wifi password is"+guest.getRoom().getBranch().getWifiPassword()+ "/n your Room No is "+guest.getRoom()+" Your CheckIn date: "+ guest.getJoiningDate()+"/n Your CheckIn date: "+guest.getCheckoutDate(), "Welcome To Eat_N_Sleep");
+				service.sendSimpleEmail(guest.getEmail(), "Hiiii " + guest.getName()
+						+ " thanks for choosing our pg Eat-N-Sleep hope u will have a good time hear\n Your wifi password is"
+						+ guest.getRoom().getBranch().getWifiPassword() + "/n your Room No is " + guest.getRoom()
+						+ " Your CheckIn date: " + guest.getJoiningDate() + "/n Your CheckIn date: "
+						+ guest.getCheckoutDate(), "Welcome To Eat_N_Sleep");
 				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 				responseStructure.setStatus(HttpStatus.OK.value());
 				responseStructure.setMessage("Saved Sucessfuly");
 				responseStructure.setData(guestDao.saveGuest(roomid, guest));
-				ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.OK); 
+				ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+						responseStructure, HttpStatus.OK);
 				return responseEntity;
 			}
 
@@ -67,7 +75,8 @@ public class GuestService {
 				responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 				responseStructure.setMessage(" rooms is not available full");
 				responseStructure.setData(null);
-				ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.NOT_FOUND); 
+				ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+						responseStructure, HttpStatus.NOT_FOUND);
 				return responseEntity;
 			}
 		}
@@ -80,23 +89,26 @@ public class GuestService {
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage(" Sucessfuly");
 			responseStructure.setData(guestDao.getGuest(id));
-			ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.OK); 
+			ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+					responseStructure, HttpStatus.OK);
 			return responseEntity;
 		} else {
 			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 			responseStructure.setMessage("Not Found");
 			responseStructure.setData(null);
-			ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.NOT_FOUND); 
+			ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+					responseStructure, HttpStatus.NOT_FOUND);
 			return responseEntity;
 		}
 	}
 
 	public ResponseEntity<ResponseStructure<Boolean>> deleteGuest(int id) {
 
-		if (guestDao.getGuest(id)!=null) {
+		if (guestDao.getGuest(id) != null) {
 			Guest guest = guestDao.getGuest(id);
-			service.sendSimpleEmail(guest.getEmail(), "Thanks For Choosing Eat-N-Sleep Hope you Had a Grate Time", "BYE BYE "+guest.getName());
+			service.sendSimpleEmail(guest.getEmail(), "Thanks For Choosing Eat-N-Sleep Hope you Had a Grate Time",
+					"BYE BYE " + guest.getName());
 			Room room = guest.getRoom();
 			List<Guest> guests = room.getGuests();
 			if (guests.size() == room.getSize()) {
@@ -110,14 +122,16 @@ public class GuestService {
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage(" Sucessfuly Deleted");
 			responseStructure.setData(guestDao.deleteGuest(id));
-			ResponseEntity<ResponseStructure<Boolean>> responseEntity=new ResponseEntity<ResponseStructure<Boolean>>(responseStructure,HttpStatus.OK); 
+			ResponseEntity<ResponseStructure<Boolean>> responseEntity = new ResponseEntity<ResponseStructure<Boolean>>(
+					responseStructure, HttpStatus.OK);
 			return responseEntity;
 		} else {
 			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
 			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 			responseStructure.setMessage("Not Deleted");
 			responseStructure.setData(null);
-			ResponseEntity<ResponseStructure<Boolean>> responseEntity=new ResponseEntity<ResponseStructure<Boolean>>(responseStructure,HttpStatus.NOT_FOUND); 
+			ResponseEntity<ResponseStructure<Boolean>> responseEntity = new ResponseEntity<ResponseStructure<Boolean>>(
+					responseStructure, HttpStatus.NOT_FOUND);
 			return responseEntity;
 		}
 	}
@@ -128,14 +142,16 @@ public class GuestService {
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage(" Sucessfuly");
 			responseStructure.setData(guestDao.getAllGuests());
-			ResponseEntity<ResponseStructure<List<Guest>>> responseEntity=new ResponseEntity<ResponseStructure<List<Guest>>>(responseStructure,HttpStatus.OK); 
+			ResponseEntity<ResponseStructure<List<Guest>>> responseEntity = new ResponseEntity<ResponseStructure<List<Guest>>>(
+					responseStructure, HttpStatus.OK);
 			return responseEntity;
 		} else {
 			ResponseStructure<List<Guest>> responseStructure = new ResponseStructure<List<Guest>>();
 			responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 			responseStructure.setMessage(" Failed");
 			responseStructure.setData(null);
-			ResponseEntity<ResponseStructure<List<Guest>>> responseEntity=new ResponseEntity<ResponseStructure<List<Guest>>>(responseStructure,HttpStatus.NOT_FOUND); 
+			ResponseEntity<ResponseStructure<List<Guest>>> responseEntity = new ResponseEntity<ResponseStructure<List<Guest>>>(
+					responseStructure, HttpStatus.NOT_FOUND);
 			return responseEntity;
 		}
 	}
@@ -146,19 +162,21 @@ public class GuestService {
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage(" Sucessfuly Updated ");
 			responseStructure.setData(guestDao.updateGuest(id, guest));
-			ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.OK); 
+			ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+					responseStructure, HttpStatus.OK);
 			return responseEntity;
 		} else {
 			ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 			responseStructure.setStatus(HttpStatus.NOT_MODIFIED.value());
 			responseStructure.setMessage("Upated Falied ");
 			responseStructure.setData(null);
-			ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.NOT_FOUND); 
+			ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+					responseStructure, HttpStatus.NOT_FOUND);
 			return responseEntity;
 		}
 	}
 
-	public ResponseEntity<ResponseStructure<List<Guest>>>  getCheckOutGuests() {
+	public ResponseEntity<ResponseStructure<List<Guest>>> getCheckOutGuests() {
 		List<Guest> guests = guestDao.getAllGuests();
 		List<Guest> outGuest = new ArrayList<Guest>();
 		for (Guest guest : guests) {
@@ -170,7 +188,8 @@ public class GuestService {
 		responseStructure.setStatus(HttpStatus.OK.value());
 		responseStructure.setMessage(" Sucessfuly ");
 		responseStructure.setData(outGuest);
-		ResponseEntity<ResponseStructure<List<Guest>>> responseEntity=new ResponseEntity<ResponseStructure<List<Guest>>>(responseStructure,HttpStatus.OK); 
+		ResponseEntity<ResponseStructure<List<Guest>>> responseEntity = new ResponseEntity<ResponseStructure<List<Guest>>>(
+				responseStructure, HttpStatus.OK);
 		return responseEntity;
 	}
 
@@ -180,23 +199,30 @@ public class GuestService {
 		guest.setPendingAmount(guest.getTotalAmount() - guest.getPaidAmount());
 		if (guest.getTotalAmount() == guest.getPaidAmount()) {
 			guest.setPaymentStatus("Fully payed");
-			service.sendSimpleEmail(guest.getEmail(), "Hi "+guest.getName()+"Thank You For Completeing Your Paymant /n This is conformation mail that you have payed the complete a=fee of Eat-N-Sleep ", "Fee Status :Fully Payed");
+			service.sendSimpleEmail(guest.getEmail(), "Hi " + guest.getName()
+					+ "Thank You For Completeing Your Paymant /n This is conformation mail that you have payed the complete a=fee of Eat-N-Sleep ",
+					"Fee Status :Fully Payed");
 		} else {
 			guest.setPaymentStatus("Pendibg");
-			service.sendSimpleEmail(guest.getEmail(), "Hi "+guest.getName()+" Your payment is pending kindly do the payment as soon as possible /nPending Amount:"+guest.getPendingAmount()+"/nAmount to be Payed:"+guest.getPendingAmount(), "Payment Pending!!!");
+			service.sendSimpleEmail(guest.getEmail(),
+					"Hi " + guest.getName()
+							+ " Your payment is pending kindly do the payment as soon as possible /nPending Amount:"
+							+ guest.getPendingAmount() + "/nAmount to be Payed:" + guest.getPendingAmount(),
+					"Payment Pending!!!");
 		}
 		ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 		responseStructure.setStatus(HttpStatus.OK.value());
 		responseStructure.setMessage(" Sucessfuly Updated payment ");
 		responseStructure.setData(guestDao.updateGuest(guest.getId(), guest));
-		ResponseEntity<ResponseStructure<Guest>> responseEntity=new ResponseEntity<ResponseStructure<Guest>>(responseStructure,HttpStatus.OK); 
+		ResponseEntity<ResponseStructure<Guest>> responseEntity = new ResponseEntity<ResponseStructure<Guest>>(
+				responseStructure, HttpStatus.OK);
 		return responseEntity;
-		
+
 	}
 
 	public ByteArrayInputStream load() {
 		ByteArrayInputStream in = guestDao.load();
 		return in;
 	}
-	
+
 }
