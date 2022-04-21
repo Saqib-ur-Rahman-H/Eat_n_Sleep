@@ -28,7 +28,7 @@ public class BranchService {
 			ResponseStructure<Branch> responseStructure = new ResponseStructure<Branch>();
 			Pg pg = pgDao.getPg(pgId);
 			List<Branch> pgs = pg.getBranches();
-			if(pgs!=null) {
+			if(pg!=null) {
 			pgs.add(branch);
 			pg.setBranches(pgs);
 			responseStructure.setStatus(HttpStatus.OK.value());

@@ -96,6 +96,7 @@ public class GuestService {
 
 		if (guestDao.getGuest(id)!=null) {
 			Guest guest = guestDao.getGuest(id);
+			service.sendSimpleEmail(guest.getEmail(), "Thanks For Choosing Eat-N-Sleep Hope you Had a Grate Time", "BYE BYE "+guest.getName());
 			Room room = guest.getRoom();
 			List<Guest> guests = room.getGuests();
 			if (guests.size() == room.getSize()) {
@@ -179,9 +180,11 @@ public class GuestService {
 		guest.setPendingAmount(guest.getTotalAmount() - guest.getPaidAmount());
 		if (guest.getTotalAmount() == guest.getPaidAmount()) {
 			guest.setPaymentStatus("Fully payed");
-		} else
+			service.sendSimpleEmail(guest.getEmail(), "Hi "+guest.getName()+"Thank You For Completeing Your Paymant /n This is conformation mail that you have payed the complete a=fee of Eat-N-Sleep ", "Fee Status :Fully Payed");
+		} else {
 			guest.setPaymentStatus("Pendibg");
-		
+			service.sendSimpleEmail(guest.getEmail(), "Hi "+guest.getName()+" Your payment is pending kindly do the payment as soon as possible /nPending Amount:"+guest.getPendingAmount()+"/nAmount to be Payed:"+guest.getPendingAmount(), "Payment Pending!!!");
+		}
 		ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 		responseStructure.setStatus(HttpStatus.OK.value());
 		responseStructure.setMessage(" Sucessfuly Updated payment ");
