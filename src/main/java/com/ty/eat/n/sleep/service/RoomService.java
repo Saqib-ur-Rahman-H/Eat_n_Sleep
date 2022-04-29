@@ -91,7 +91,6 @@ public class RoomService {
 			return responseEntity;
 		}
 	}
-
 	public ResponseEntity<ResponseStructure<Room>> updateroom(int id,int bid, Room room) {
 		if (roomDao.updateRoom(id,bid, room) != null) {
 			ResponseStructure<Room> responseStructure = new ResponseStructure<Room>();

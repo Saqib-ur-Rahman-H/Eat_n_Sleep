@@ -46,16 +46,17 @@ public class GuestService {
 
 		} else {
 			List<Guest> guests = room.getGuests();
-			if (guests.size() < room.getSize()) {
+			if (guests.size() <= room.getSize()) {
 				guest.setTotalAmount(room.getCost() / room.getSize());
 				guests.add(guest);
 				room.setGuests(guests);
 				roomDao.updateRoom(guest.getRoom().getId(), guest.getRoom().getBranch().getId(), room);
 				service.sendSimpleEmail(guest.getEmail(), "Hiiii " + guest.getName()
 						+ " thanks for choosing our pg Eat-N-Sleep hope u will have a good time hear\n Your wifi password is"
-						+ guest.getRoom().getBranch().getWifiPassword() + "/n your Room No is " + guest.getRoom()
-						+ " Your CheckIn date: " + guest.getJoiningDate() + "/n Your CheckIn date: "
+						+ guest.getRoom().getBranch().getWifiPassword() + "\n your Room No is " + guest.getRoom().getId()
+						+ " Your CheckIn date: " + guest.getJoiningDate() + "\n Your CheckIn date: "
 						+ guest.getCheckoutDate(), "Welcome To Eat_N_Sleep");
+				makePayment(guest.getId(),guest.getPaidAmount());				
 				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 				responseStructure.setStatus(HttpStatus.OK.value());
 				responseStructure.setMessage("Saved Sucessfuly");
@@ -71,6 +72,7 @@ public class GuestService {
 				avlRooms.remove(room);
 				List<Room> takenRooms = brabch.getBookedRooms();
 				takenRooms.add(room);
+				roomDao.updateRoom(room.getId(), room.getBranch().getId(), room);
 				ResponseStructure<Guest> responseStructure = new ResponseStructure<Guest>();
 				responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 				responseStructure.setMessage(" rooms is not available full");
@@ -80,7 +82,6 @@ public class GuestService {
 				return responseEntity;
 			}
 		}
-
 	}
 
 	public ResponseEntity<ResponseStructure<Guest>> getGuest(int id) {
@@ -117,6 +118,7 @@ public class GuestService {
 				bookedRooms.remove(room);
 				List<Room> avlRooms = branch.getAvailableRooms();
 				avlRooms.add(room);
+				roomDao.updateRoom(room.getId(), room.getBranch().getId(), room);
 			}
 			ResponseStructure<Boolean> responseStructure = new ResponseStructure<Boolean>();
 			responseStructure.setStatus(HttpStatus.OK.value());
